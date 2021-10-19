@@ -1,22 +1,28 @@
-import re
+import regex as re
+from random import choices
 
 
-DNA = ["ATGCGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
+# DNA = ["TTGCCA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
+def genRandDna(n : int) -> list:
+    return ["".join(choices("ACGT", k=n)) for i in range(n)]
 
 
 def isMutant(dna : list) -> bool:
-    concatDna = "".join(dna)
+    concatDna = " ".join(dna)
+    n = len(dna)
     regexList = [
-        r".*[ACGT]{4}.*", # Lineas horizontales
-        r"(.*)([ACGT])(.{5}\2){3,}(.*)", # Lineas verticales
-        r"(.*)([ACGT])(.{6}\2){3,}(.*)", # Lineas diagonales izq-der
-        r"(.*)([ACGT])(.{4}\2){3,}(.*)", # Lineas diagonales der-izq
+        r"([ACGT])(\1{3})", # Lineas horizontales
+        r"([ACGT])(.{" + str(n) + r"}\1){3,}", # Lineas verticales
+        r"([ACGT])(.{" + str(n + 1) + r"}\1){3,}", # Lineas diagonales izq-der
+        r"([ACGT])(.{" + str(n - 1) + r"}\1){3,}", # Lineas diagonales der-izq
     ]
     matchCounter = 0
     
     for regex in regexList:
-        if re.match(regex, concatDna):
-            matchCounter += 1
+        matches = re.findall(regex, concatDna, overlapped=True)
+        if matches:
+            matchCounter += len(matches)
+        print(matches)
     
     if matchCounter >= 2:
         return True
@@ -26,4 +32,9 @@ def isMutant(dna : list) -> bool:
 
 
 if __name__ == "__main__":
+    DNA = genRandDna(10)
     print(isMutant(DNA))
+    for i in DNA:
+        for j in i:
+            print(f"{j} ", end="")
+        print()
