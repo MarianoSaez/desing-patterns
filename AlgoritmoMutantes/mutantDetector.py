@@ -22,7 +22,7 @@ def isMutant(dna : list) -> bool:
         matches = re.findall(regex, concatDna, overlapped=True)
         if matches:
             matchCounter += len(matches)
-        print(matches)
+        # print(matches)
     
     if matchCounter >= 2:
         return True
